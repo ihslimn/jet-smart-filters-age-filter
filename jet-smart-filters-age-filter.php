@@ -41,7 +41,9 @@ class Jet_Smart_Filters_Age_Filter {
 				$current_year = date( 'Y' );
 
 				$age_from = $meta_query['value'][0];
-				$date_from = strtotime( sprintf( '01.01.%d', $current_year-$age_to ) )-1;
+				$today_date = DateTime::createFromFormat( 'U', $today );
+				$from = $today_date->modify( sprintf( '-%dyears', $meta_query['value'][1]+1 ) );
+				$date_from = (int) $from->format('U')+1;
 
 				$age_to = $meta_query['value'][1];
 				$today_date = DateTime::createFromFormat( 'U', $today );
