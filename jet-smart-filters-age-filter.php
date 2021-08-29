@@ -38,22 +38,27 @@ class Jet_Smart_Filters_Age_Filter {
 			if ( false !== strpos( $meta_query['key'], $this->base_mask ) ) {
 
 				$today = strtotime( 'today midnight' );
+				$current_year = date( 'Y' );
 
-				$from = DateTime::createFromFormat( 'U', $today );
-				$from->modify( sprintf( '-%dyears', $meta_query['value'][1]+1 ) );
-				$from = (int) $from->format('U')-1;
+				$age_from = $meta_query['value'][0];
+				$date_from = strtotime( sprintf( '01.01.%d', $current_year-$age_to ) )-1;
 
-				$to = DateTime::createFromFormat( 'U', $today );
-				$to->modify( sprintf( '-%dyears', $meta_query['value'][0] ) );
-				$to = (int) $to->format('U')+1;
+				$age_to = $meta_query['value'][1];
+				$today_date = DateTime::createFromFormat( 'U', $today );
+				$to = $today_date->modify( sprintf( '-%dyears', $meta_query['value'][0] ) );
+				$date_to = (int) $to->format('U')+1;
 
 				$data = explode( '::', $meta_query['key'] );
 
 				$field = ! empty( $data[1] ) ? $data[1] : false;
 
+				if ( ! $field ) {
+					continue;
+				}
+
 				$query['meta_query'][ $index ]['key'] = $field;
-				$query['meta_query'][ $index ]['value'][1] = $to;
-				$query['meta_query'][ $index ]['value'][0] = $from;
+				$query['meta_query'][ $index ]['value'][0] = $date_from;
+				$query['meta_query'][ $index ]['value'][1] = $date_to;
 
 			}
 		}
