@@ -33,21 +33,20 @@ class Jet_Smart_Filters_Age_Filter {
 			return $query;
 		}
 
+		$today = strtotime( 'today midnight' );
+		
 		foreach ( $query['meta_query'] as $index => $meta_query ) {
 
 			if ( false !== strpos( $meta_query['key'], $this->base_mask ) ) {
 
-				$today = strtotime( 'today midnight' );
-				$current_year = date( 'Y' );
+				$age_to = $meta_query['value'][1];
+				$today_date = DateTime::createFromFormat( 'U', $today );
+				$from = $today_date->modify( sprintf( '-%dyears', $age_to+1 ) );
+				$date_from = (int) $from->format('U')+1;
 
 				$age_from = $meta_query['value'][0];
 				$today_date = DateTime::createFromFormat( 'U', $today );
-				$from = $today_date->modify( sprintf( '-%dyears', $meta_query['value'][1]+1 ) );
-				$date_from = (int) $from->format('U')+1;
-
-				$age_to = $meta_query['value'][1];
-				$today_date = DateTime::createFromFormat( 'U', $today );
-				$to = $today_date->modify( sprintf( '-%dyears', $meta_query['value'][0] ) );
+				$to = $today_date->modify( sprintf( '-%dyears', $age_from ) );
 				$date_to = (int) $to->format('U')+1;
 
 				$data = explode( '::', $meta_query['key'] );
