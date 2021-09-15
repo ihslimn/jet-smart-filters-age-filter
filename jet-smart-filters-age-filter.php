@@ -39,6 +39,14 @@ class Jet_Smart_Filters_Age_Filter {
 
 			if ( false !== strpos( $meta_query['key'], $this->base_mask ) ) {
 
+				$data = explode( '::', $meta_query['key'] );
+
+				$field = ! empty( $data[1] ) ? $data[1] : false;
+
+				if ( ! $field ) {
+					continue;
+				}
+
 				$age_to = $meta_query['value'][1];
 				$today_date = DateTime::createFromFormat( 'U', $today );
 				$from = $today_date->modify( sprintf( '-%dyears', $age_to+1 ) );
@@ -48,14 +56,6 @@ class Jet_Smart_Filters_Age_Filter {
 				$today_date = DateTime::createFromFormat( 'U', $today );
 				$to = $today_date->modify( sprintf( '-%dyears', $age_from ) );
 				$date_to = (int) $to->format('U')+1;
-
-				$data = explode( '::', $meta_query['key'] );
-
-				$field = ! empty( $data[1] ) ? $data[1] : false;
-
-				if ( ! $field ) {
-					continue;
-				}
 
 				$query['meta_query'][ $index ]['key'] = $field;
 				$query['meta_query'][ $index ]['value'][0] = $date_from;
