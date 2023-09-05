@@ -18,7 +18,7 @@ if ( ! defined( 'WPINC' ) ) {
 
 class Jet_Smart_Filters_Age_Filter {
 
-	private $base_mask = 'age_filter::';
+	private $base_mask = 'age_filter__';
 
 	public function __construct() {
 		add_filter( 'jet-smart-filters/query/final-query', array( $this, 'apply_dates_filter' ), -999 );
@@ -39,7 +39,7 @@ class Jet_Smart_Filters_Age_Filter {
 
 			if ( false !== strpos( $meta_query['key'], $this->base_mask ) ) {
 
-				$data = explode( '::', $meta_query['key'] );
+				$data = explode( '__', $meta_query['key'] );
 
 				$field = ! empty( $data[1] ) ? $data[1] : false;
 
